@@ -3,3 +3,7 @@ tmp
 /dist
 /build
 todo.md
+
+.env
+.env.*
+.*.env
