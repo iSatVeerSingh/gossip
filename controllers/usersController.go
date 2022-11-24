@@ -26,9 +26,32 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	result, err := services.CreateUser(&user)
 	if err != nil {
-		helpers.GetErrorResponse(w, err, http.StatusBadRequest)
+		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	helpers.GetSuccessResponse(w, result, http.StatusCreated)
+}
+
+func LoginUser(w http.ResponseWriter, r *http.Request) {
+	var user models.LoginUser
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if loginError, isValid := helpers.LoginUserValidation(&user); !isValid {
+		helpers.GetErrorResponse(w, loginError, http.StatusBadRequest)
+		return
+	}
+
+	result, err := services.LoginUser(&user)
+	if err != nil {
+		helpers.GetErrorResponse(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	helpers.GetSuccessResponse(w, result, http.StatusOK)
 }

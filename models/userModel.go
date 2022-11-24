@@ -15,6 +15,11 @@ type User struct {
 	Password  string             `json:"password" bson:"password"`
 }
 
+type LoginUser struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 func GetUserCollection() *mongo.Collection {
 	return db.GetMongoCollection("users")
 }
