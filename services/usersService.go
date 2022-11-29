@@ -27,21 +27,21 @@ func CreateUser(user *models.User) (interface{}, error) {
 	return result, err
 }
 
-func LoginUser(loginData *models.LoginUser) (interface{}, error) {
+func LoginUser(loginData *models.LoginUser) (AuthUser, error) {
 	user, err := GetUserByUsername(loginData.Username)
 
-	authUser := make(map[string]string)
+	var authUser AuthUser
 
 	if err != nil {
-		return "", err
+		return authUser, err
 	}
 
 	if isValid := helpers.ValidatePassword(loginData.Password, user.Password); !isValid {
-		return "", errors.New("invalid credentials")
+		return authUser, errors.New("invalid credentials")
 	}
 
-	authUser["id"] = user.Id.Hex()
-	authUser["username"] = user.Username
+	authUser.Id = user.Id.Hex()
+	authUser.Username = user.Username
 
 	return authUser, nil
 }

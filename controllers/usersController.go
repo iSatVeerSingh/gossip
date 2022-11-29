@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/iSatVeerSingh/gossip/helpers"
 	"github.com/iSatVeerSingh/gossip/models"
@@ -52,6 +53,18 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		helpers.GetErrorResponse(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
+
+	token := helpers.GenerateToken(result)
+
+	tokenCookie := http.Cookie{
+		Name:   "Token",
+		Value:  token,
+		MaxAge: int(time.Minute) * 15,
+		// Secure: true,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, &tokenCookie)
 
 	helpers.GetSuccessResponse(w, result, http.StatusOK)
 }
