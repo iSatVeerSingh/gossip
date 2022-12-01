@@ -7,9 +7,11 @@ import (
 func InitRoutes() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
-	router = SetAuthRoutes(router)
+	apiRouter := router.PathPrefix("/api").Subrouter()
 
-	router = SetUserRoutes(router)
+	apiRouter = SetAuthRoutes(apiRouter)
 
-	return router
+	apiRouter = SetUserRoutes(apiRouter)
+
+	return apiRouter
 }

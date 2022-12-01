@@ -33,7 +33,7 @@ func LoginUser(loginData *models.LoginUser) (AuthUser, error) {
 	var authUser AuthUser
 
 	if err != nil {
-		return authUser, err
+		return authUser, errors.New("invalid credentials")
 	}
 
 	if isValid := helpers.ValidatePassword(loginData.Password, user.Password); !isValid {
