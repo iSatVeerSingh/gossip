@@ -18,8 +18,6 @@ func GetErrorResponse(w http.ResponseWriter, data interface{}, code int) {
 		Data:    data,
 	}
 
-	w.Header().Add("Content-Type", "application/json; charset=utf-8")
-
 	result, err := json.Marshal(newError)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -34,8 +32,6 @@ func GetSuccessResponse(w http.ResponseWriter, data interface{}, code int) {
 		Error:   false,
 		Data:    data,
 	}
-
-	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 
 	result, err := json.Marshal(newSuccess)
 	if err != nil {

@@ -9,17 +9,17 @@ import (
 )
 
 type Claims struct {
-	UserInfo interface{}
+	UserInfo utils.AuthUser
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userInfo interface{}) string {
+func GenerateToken(userInfo utils.AuthUser) string {
 	secretKey := utils.GetEnv("SESSION_SECRET")
 
 	claims := &Claims{
 		UserInfo: userInfo,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(utils.EXP_TIME)),
 		},
 	}
 
@@ -33,7 +33,7 @@ func GenerateToken(userInfo interface{}) string {
 	return tokenStr
 }
 
-func ValidateToken(tokenStr string) (interface{}, bool) {
+func ValidateToken(tokenStr string) (utils.AuthUser, bool) {
 
 	secretKey := utils.GetEnv("SESSION_SECRET")
 
@@ -44,11 +44,11 @@ func ValidateToken(tokenStr string) (interface{}, bool) {
 	})
 
 	if err != nil {
-		return "", false
+		return token.Claims.(*Claims).UserInfo, false
 	}
 
 	if !token.Valid {
-		return "", false
+		return token.Claims.(*Claims).UserInfo, false
 	}
 
 	return token.Claims.(*Claims).UserInfo, true

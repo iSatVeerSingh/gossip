@@ -1,17 +1,21 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 )
 
 func InitRoutes() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
-	apiRouter := router.PathPrefix("/api").Subrouter()
+	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
 
-	apiRouter = SetAuthRoutes(apiRouter)
+	router = SetAuthRoutes(router)
 
-	apiRouter = SetUserRoutes(apiRouter)
+	router = SetUserRoutes(router)
 
-	return apiRouter
+	return router
 }

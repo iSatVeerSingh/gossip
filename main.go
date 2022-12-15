@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/iSatVeerSingh/gossip/db"
+	"github.com/iSatVeerSingh/gossip/middlewares"
 	"github.com/iSatVeerSingh/gossip/models"
 	"github.com/iSatVeerSingh/gossip/routes"
 	"github.com/iSatVeerSingh/gossip/utils"
@@ -23,6 +24,8 @@ func main() {
 	models.AddIndexes()
 
 	router := routes.InitRoutes()
+
+	router.Use(middlewares.Cors)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,

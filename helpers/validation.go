@@ -6,7 +6,7 @@ import (
 	"github.com/iSatVeerSingh/gossip/models"
 )
 
-func CreateUserValidation(user *models.User) (map[string]string, bool) {
+func CreateUserValidation(user *models.UserModel) (map[string]string, bool) {
 	userError := make(map[string]string)
 
 	if len(user.FirstName) < 1 {
