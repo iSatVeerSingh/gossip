@@ -36,3 +36,30 @@ func AddRequest(w http.ResponseWriter, r *http.Request) {
 	helpers.GetSuccessResponse(w, "Connection request sent successfully", http.StatusOK)
 
 }
+
+func CreateConversation(w http.ResponseWriter, r *http.Request) {
+	var acceptRequest utils.AcceptRequest
+
+	err := json.NewDecoder(r.Body).Decode(&acceptRequest)
+
+	if err != nil {
+		helpers.GetErrorResponse(w, "Invalid Request", http.StatusBadRequest)
+		return
+	}
+
+	userInfo := r.Context().Value(utils.CtxUserInfoKey{}).(utils.AuthUser)
+
+	if userInfo.Id != acceptRequest.AcceptedBy.Id.Hex() || userInfo.Id == acceptRequest.AcceptedUser.Id.Hex() {
+		helpers.GetErrorResponse(w, "Invalid Request", http.StatusBadRequest)
+		return
+	}
+
+	result, err := services.CreateConversation(acceptRequest)
+
+	if err != nil {
+		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	helpers.GetSuccessResponse(w, result, http.StatusOK)
+}

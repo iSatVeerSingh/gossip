@@ -17,6 +17,7 @@ func SetUserRoutes(router *mux.Router) *mux.Router {
 
 	userRouter.HandleFunc(USER_PROFILE, controllers.UserProfile).Methods(http.MethodGet)
 	userRouter.HandleFunc(USERS_REQUEST, controllers.AddRequest).Methods(http.MethodPatch)
+	userRouter.HandleFunc(USERS_REQUEST, controllers.CreateConversation).Methods(http.MethodPost)
 
 	router.PathPrefix("/users").Handler(middlewares.Authorize(userRouter))
 

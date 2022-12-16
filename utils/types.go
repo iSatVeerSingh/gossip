@@ -12,6 +12,11 @@ type ConnectionRequest struct {
 	RequestedBy RequestUser `json:"requestedby"`
 }
 
+type AcceptRequest struct {
+	AcceptedUser RequestUser `json:"accepteduser"`
+	AcceptedBy   RequestUser `json:"acceptedby"`
+}
+
 type AuthUser struct {
 	Id       string `json:"id"`
 	Username string `json:"username"`

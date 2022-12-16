@@ -3,7 +3,9 @@ package models
 import (
 	"time"
 
+	"github.com/iSatVeerSingh/gossip/db"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type MessageModel struct {
@@ -15,10 +17,27 @@ type MessageModel struct {
 	Type       string             `json:"type" bson:"type"`
 }
 
+type ParticipantUser struct {
+	Id       primitive.ObjectID `json:"id" bson:"_id"`
+	Username string             `json:"username" bson:"username"`
+}
+
+// type ChatModel struct {
+// 	Id       primitive.ObjectID    `json:"id" bson:"_id,omitempty"`
+// 	Users    [2]primitive.ObjectID `json:"users" bson:"users"`
+// 	Created  time.Time             `json:"created" bson:"created"`
+// 	Type     string                `json:"type" bson:"type"`
+// 	Messages []MessageModel        `json:"messages" bson:"messages"`
+// }
+
 type ChatModel struct {
-	Id       primitive.ObjectID    `json:"id" bson:"_id,omitempty"`
-	Users    [2]primitive.ObjectID `json:"users" bson:"users"`
-	Created  time.Time             `json:"created" bson:"created"`
-	Type     string                `json:"type" bson:"type"`
-	Messages []MessageModel        `json:"messages" bson:"messages"`
+	Id       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Users    [2]ParticipantUser `json:"users" bson:"users,omitempty"`
+	Created  primitive.DateTime `json:"created" bson:"created"`
+	Type     string             `json:"type" bson:"type"`
+	Messages []MessageModel     `json:"messages" bson:"messages,omitempty"`
+}
+
+func GetChatCollection() *mongo.Collection {
+	return db.GetMongoCollection("chats")
 }
