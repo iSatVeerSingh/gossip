@@ -8,6 +8,7 @@ const (
 )
 
 const (
-	USER_PROFILE  string = "/users/{username}"
-	USERS_REQUEST string = "/users/request"
+	USER_PROFILE      string = "/users/{username}"
+	USERS_REQUEST     string = "/users/request"
+	USERS_CONNECTIONS string = "/users/connections"
 )

@@ -37,6 +37,20 @@ func AddRequest(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func GetAllRequests(w http.ResponseWriter, r *http.Request) {
+	userInfo := r.Context().Value(utils.CtxUserInfoKey{}).(utils.AuthUser)
+
+	result, err := services.GetAllRequestsByUser(userInfo.Id)
+
+	if err != nil {
+		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	helpers.GetSuccessResponse(w, result, http.StatusOK)
+
+}
+
 func CreateConversation(w http.ResponseWriter, r *http.Request) {
 	var acceptRequest utils.AcceptRequest
 
@@ -55,6 +69,19 @@ func CreateConversation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result, err := services.CreateConversation(acceptRequest)
+
+	if err != nil {
+		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	helpers.GetSuccessResponse(w, result, http.StatusOK)
+}
+
+func GetAllConnections(w http.ResponseWriter, r *http.Request) {
+	userInfo := r.Context().Value(utils.CtxUserInfoKey{}).(utils.AuthUser)
+
+	result, err := services.GetAllConnectionsByUser(userInfo.Id)
 
 	if err != nil {
 		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)

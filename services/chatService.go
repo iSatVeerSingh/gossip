@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/iSatVeerSingh/gossip/models"
@@ -10,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func AddRequest(request utils.ConnectionRequest) error {
@@ -44,6 +46,32 @@ func AddRequest(request utils.ConnectionRequest) error {
 		return errors.New("internal server error")
 	}
 	return nil
+}
+
+func GetAllRequestsByUser(id string) (utils.User, error) {
+	var requests utils.User
+
+	mongoId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return requests, err
+	}
+
+	filter := bson.M{"_id": mongoId}
+
+	projectFilter := bson.M{"requests": 1}
+
+	result := models.GetUserCollection().FindOne(context.TODO(), filter, options.FindOne().SetProjection(projectFilter))
+
+	fmt.Println(result)
+
+	err = result.Decode(&requests)
+
+	if err != nil {
+		return requests, err
+	}
+
+	return requests, nil
 }
 
 func CreateConversation(request utils.AcceptRequest) (interface{}, error) {
@@ -102,4 +130,30 @@ func CreateChat(users utils.AcceptRequest) (*mongo.InsertOneResult, error) {
 	result, err := models.GetChatCollection().InsertOne(context.TODO(), chat)
 
 	return result, err
+}
+
+func GetAllConnectionsByUser(id string) (utils.User, error) {
+	var connections utils.User
+
+	mongoId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return connections, err
+	}
+
+	filter := bson.M{"_id": mongoId}
+
+	projectFilter := bson.M{"connections": 1}
+
+	result := models.GetUserCollection().FindOne(context.TODO(), filter, options.FindOne().SetProjection(projectFilter))
+
+	fmt.Println(result)
+
+	err = result.Decode(&connections)
+
+	if err != nil {
+		return connections, err
+	}
+
+	return connections, nil
 }
