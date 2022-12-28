@@ -14,7 +14,7 @@ type Claims struct {
 }
 
 func GenerateToken(userInfo utils.AuthUser) string {
-	secretKey := utils.GetEnv("SESSION_SECRET")
+	secretKey := utils.GetEnv("JWT_SECRET_KEY")
 
 	claims := &Claims{
 		UserInfo: userInfo,
@@ -35,7 +35,7 @@ func GenerateToken(userInfo utils.AuthUser) string {
 
 func ValidateToken(tokenStr string) (utils.AuthUser, bool) {
 
-	secretKey := utils.GetEnv("SESSION_SECRET")
+	secretKey := utils.GetEnv("JWT_SECRET_KEY")
 
 	claims := &Claims{}
 
