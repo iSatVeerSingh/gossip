@@ -9,12 +9,8 @@ import (
 func CreateUserValidation(user *models.UserModel) (map[string]string, bool) {
 	userError := make(map[string]string)
 
-	if len(user.FirstName) < 1 {
-		userError["firstname"] = "First name is required"
-	}
-
-	if len(user.LastName) < 1 {
-		userError["lastname"] = "Last name is required"
+	if len(user.Name) < 1 {
+		userError["name"] = "Name is required"
 	}
 
 	if match, _ := regexp.MatchString("^[a-z0-9.]+@[a-z0-9]+.[a-z]+$", user.Email); !match {

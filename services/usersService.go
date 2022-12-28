@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func CreateUser(user *models.UserModel) (interface{}, error) {
+func CreateNewUser(user *models.UserModel) (interface{}, error) {
 	hashPassword, ok := helpers.EncryptPassword(user.Password)
 
 	if !ok {
@@ -22,11 +22,14 @@ func CreateUser(user *models.UserModel) (interface{}, error) {
 
 	user.Password = hashPassword
 	user.Created = time.Now()
+	user.Updated = time.Now()
+	user.Requests = make([]models.RequestUser, 0)
+	user.Connections = make([]models.Connection, 0)
 
 	result, err := models.GetUserCollection().InsertOne(context.TODO(), user)
 
 	if mongo.IsDuplicateKeyError(err) {
-		return nil, errors.New("user already exists")
+		return nil, err
 	}
 	return result, err
 }

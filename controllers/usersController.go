@@ -27,7 +27,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := services.CreateUser(&user)
+	result, err := services.CreateNewUser(&user)
 	if err != nil {
 		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)
 		return
