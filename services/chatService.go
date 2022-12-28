@@ -14,9 +14,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func AddRequest(request utils.ConnectionRequest) error {
+func AddNewRequest(request utils.ConnectionRequest) error {
 
-	countFilter := bson.M{"_id": request.RequestedTo.Id, "requests": bson.M{
+	countFilter := bson.M{"_id": request.RequestedUser.Id, "requests": bson.M{
 		"$elemMatch": bson.M{"_id": request.RequestedBy.Id, "username": request.RequestedBy.Username},
 	}}
 
@@ -30,7 +30,9 @@ func AddRequest(request utils.ConnectionRequest) error {
 		return err
 	}
 
-	updateFilterQuery := bson.M{"_id": request.RequestedTo.Id}
+	request.RequestedBy.RequestTime = time.Now()
+
+	updateFilterQuery := bson.M{"_id": request.RequestedUser.Id}
 
 	updateRequestData := bson.M{"$push": bson.M{
 		"requests": request.RequestedBy,
@@ -63,9 +65,9 @@ func GetAllRequestsByUser(id string) (utils.User, error) {
 
 	result := models.GetUserCollection().FindOne(context.TODO(), filter, options.FindOne().SetProjection(projectFilter))
 
-	fmt.Println(result)
-
 	err = result.Decode(&requests)
+
+	fmt.Println(requests)
 
 	if err != nil {
 		return requests, err
@@ -74,7 +76,7 @@ func GetAllRequestsByUser(id string) (utils.User, error) {
 	return requests, nil
 }
 
-func CreateConversation(request utils.AcceptRequest) (interface{}, error) {
+func CreateConnection(request utils.AcceptRequest) (interface{}, error) {
 	countFilter := bson.M{"_id": request.AcceptedBy.Id, "requests": bson.M{
 		"$elemMatch": bson.M{
 			"_id":      request.AcceptedUser.Id,
@@ -92,11 +94,17 @@ func CreateConversation(request utils.AcceptRequest) (interface{}, error) {
 		return "", err
 	}
 
+	var newConnection utils.Connection
+
+	newConnection.UserId = request.AcceptedUser.Id
+	newConnection.ConnectionType = "one-to-one"
+	newConnection.ConnectionTime = time.Now()
+
 	updateFilterQuery := bson.M{"_id": request.AcceptedBy.Id}
 
 	updateRequestData := bson.M{
 		"$pull": bson.M{"requests": request.AcceptedUser},
-		"$push": bson.M{"connections": request.AcceptedUser},
+		"$push": bson.M{"connections": newConnection},
 	}
 
 	updateResult, err := models.GetUserCollection().UpdateOne(context.TODO(), updateFilterQuery, updateRequestData)
@@ -125,7 +133,8 @@ func CreateChat(users utils.AcceptRequest) (*mongo.InsertOneResult, error) {
 
 	chat.Type = "one-to-one"
 
-	chat.Created = primitive.NewDateTimeFromTime(time.Now())
+	chat.Created = time.Now()
+	chat.Messages = make([]models.MessageModel, 0)
 
 	result, err := models.GetChatCollection().InsertOne(context.TODO(), chat)
 

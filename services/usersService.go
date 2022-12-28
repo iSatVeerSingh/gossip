@@ -23,8 +23,8 @@ func CreateNewUser(user *models.UserModel) (interface{}, error) {
 	user.Password = hashPassword
 	user.Created = time.Now()
 	user.Updated = time.Now()
-	user.Requests = make([]models.RequestUser, 0)
-	user.Connections = make([]models.Connection, 0)
+	user.Requests = make([]utils.RequestUser, 0)
+	user.Connections = make([]utils.Connection, 0)
 
 	result, err := models.GetUserCollection().InsertOne(context.TODO(), user)
 
@@ -65,17 +65,15 @@ func GetUser(key string, value string) (models.UserModel, error) {
 func FindUserByUsername(username string) (utils.User, error) {
 	var user utils.User
 
-	projectfilter := bson.D{
-		{Key: "firstname", Value: 1},
-		{Key: "lastname", Value: 1},
-		{Key: "email", Value: 1},
-		{Key: "username", Value: 1},
-		{Key: "avatar", Value: 1},
-		{Key: "about", Value: 1},
-		{Key: "status", Value: 1},
+	projectFilter := bson.M{
+		"name":     1,
+		"username": 1,
+		"avatar":   1,
+		"about":    1,
+		"status":   1,
 	}
 
-	result := models.GetUserCollection().FindOne(context.TODO(), bson.D{{Key: "username", Value: username}}, options.FindOne().SetProjection(projectfilter))
+	result := models.GetUserCollection().FindOne(context.TODO(), bson.D{{Key: "username", Value: username}}, options.FindOne().SetProjection(projectFilter))
 
 	err := result.Decode(&user)
 

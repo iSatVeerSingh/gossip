@@ -15,6 +15,7 @@ type MessageModel struct {
 	Time       time.Time          `json:"time" bson:"time"`
 	MsgText    string             `json:"msgText" bson:"msgText"`
 	Type       string             `json:"type" bson:"type"`
+	IsRead     bool               `json:"isRead" bson:"isRead"`
 }
 
 type ParticipantUser struct {
@@ -22,20 +23,12 @@ type ParticipantUser struct {
 	Username string             `json:"username" bson:"username"`
 }
 
-// type ChatModel struct {
-// 	Id       primitive.ObjectID    `json:"id" bson:"_id,omitempty"`
-// 	Users    [2]primitive.ObjectID `json:"users" bson:"users"`
-// 	Created  time.Time             `json:"created" bson:"created"`
-// 	Type     string                `json:"type" bson:"type"`
-// 	Messages []MessageModel        `json:"messages" bson:"messages"`
-// }
-
 type ChatModel struct {
 	Id       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Users    [2]ParticipantUser `json:"users" bson:"users,omitempty"`
-	Created  primitive.DateTime `json:"created" bson:"created"`
+	Created  time.Time          `json:"created" bson:"created"`
 	Type     string             `json:"type" bson:"type"`
-	Messages []MessageModel     `json:"messages" bson:"messages,omitempty"`
+	Messages []MessageModel     `json:"messages" bson:"messages"`
 }
 
 func GetChatCollection() *mongo.Collection {

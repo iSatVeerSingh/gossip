@@ -21,12 +21,12 @@ func AddRequest(w http.ResponseWriter, r *http.Request) {
 
 	userInfo := r.Context().Value(utils.CtxUserInfoKey{}).(utils.AuthUser)
 
-	if userInfo.Id != request.RequestedBy.Id.Hex() || userInfo.Id == request.RequestedTo.Id.Hex() {
+	if userInfo.Id != request.RequestedBy.Id.Hex() || userInfo.Id == request.RequestedUser.Id.Hex() {
 		helpers.GetErrorResponse(w, "Invalid Request", http.StatusBadRequest)
 		return
 	}
 
-	err = services.AddRequest(request)
+	err = services.AddNewRequest(request)
 
 	if err != nil {
 		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)
@@ -51,7 +51,7 @@ func GetAllRequests(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CreateConversation(w http.ResponseWriter, r *http.Request) {
+func CreateConnection(w http.ResponseWriter, r *http.Request) {
 	var acceptRequest utils.AcceptRequest
 
 	err := json.NewDecoder(r.Body).Decode(&acceptRequest)
@@ -68,7 +68,7 @@ func CreateConversation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := services.CreateConversation(acceptRequest)
+	result, err := services.CreateConnection(acceptRequest)
 
 	if err != nil {
 		helpers.GetErrorResponse(w, err.Error(), http.StatusBadRequest)
