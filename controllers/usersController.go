@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// Signup and Create new user in database
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user models.UserModel
 
@@ -36,6 +37,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	helpers.GetSuccessResponse(w, result, http.StatusCreated)
 }
 
+// Login an existing user
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var user models.LoginUser
 
@@ -72,6 +74,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	helpers.GetSuccessResponse(w, result, http.StatusOK)
 }
 
+// Get Profile of User
 func UserProfile(w http.ResponseWriter, r *http.Request) {
 	username := mux.Vars(r)["username"]
 
@@ -89,6 +92,7 @@ func UserProfile(w http.ResponseWriter, r *http.Request) {
 	helpers.GetSuccessResponse(w, user, http.StatusOK)
 }
 
+// Check if user is already loggedint or not
 func LoginStatus(w http.ResponseWriter, r *http.Request) {
 	userInfo := r.Context().Value(utils.CtxUserInfoKey{}).(utils.AuthUser)
 
@@ -101,6 +105,7 @@ func LoginStatus(w http.ResponseWriter, r *http.Request) {
 	helpers.GetSuccessResponse(w, user, http.StatusOK)
 }
 
+// Logout user if it is loggedin
 func LogoutUser(w http.ResponseWriter, r *http.Request) {
 	tokenCookie := http.Cookie{
 		Name:   "Token",

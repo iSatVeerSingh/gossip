@@ -12,6 +12,7 @@ import (
 	"github.com/iSatVeerSingh/gossip/utils"
 )
 
+// Load Environment Variables befor starting the application
 func init() {
 	utils.LoadEnv()
 }
@@ -23,6 +24,7 @@ func main() {
 	defer db.MongoSessionClose(mongoClient)
 	models.AddIndexes()
 
+	// Intialize all routes
 	router := routes.InitRoutes()
 
 	router.Use(middlewares.Cors)

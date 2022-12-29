@@ -8,6 +8,7 @@ import (
 	"github.com/iSatVeerSingh/gossip/middlewares"
 )
 
+// User authentication routes
 func SetAuthRoutes(router *mux.Router) *mux.Router {
 	authRouter := mux.NewRouter()
 
